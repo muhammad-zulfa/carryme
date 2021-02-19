@@ -39,7 +39,7 @@ class FerryService: IFerryService{
     }
 
     override fun findAll(): MutableIterable<Ferry>? {
-        TODO("Not yet implemented")
+        return ferryRepository.findAll()
     }
 
     override fun findById(id: Long): Ferry {

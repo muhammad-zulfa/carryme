@@ -16,15 +16,23 @@ import org.springframework.stereotype.Service
 
 @Service
 class DockService: IDockService{
+    @Autowired
     private lateinit var repository: DockRepository
     override fun findAllByName(search: String, pgbl: Pageable): Page<Docks> {
         return repository.findAllByNameLike(search,pgbl)
     }
 
     override fun submit(form: DockRequestDto): Docks {
-        val dock = Docks()
+        val dock = when(form.id){
+            null -> Docks()
+            else -> repository.findById(form.id!!).get()
+        }
         BeanUtils.copyProperties(form,dock)
         return repository.save(dock)
+    }
+
+    override fun deleteAll(id: List<Long>) {
+        repository.deleteAll(repository.findAllById(id))
     }
 
     override fun findAll(pageable: Pageable?): Page<Docks>? {
@@ -32,11 +40,11 @@ class DockService: IDockService{
     }
 
     override fun findAll(): MutableIterable<Docks>? {
-        TODO("Not yet implemented")
+        return repository.findAll()
     }
 
     override fun findById(id: Long): Docks {
-        TODO("Not yet implemented")
+        return repository.findById(id).get()
     }
 
     override fun save(entity: Docks): Docks {

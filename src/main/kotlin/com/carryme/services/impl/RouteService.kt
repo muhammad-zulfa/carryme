@@ -21,7 +21,9 @@ import org.springframework.web.servlet.function.router
 @Service
 class RouteService: IRouteService{
 
+    @Autowired
     private lateinit var repository: RouteRepository
+    @Autowired
     private lateinit var dockRepository: DockRepository
 
     override fun findAllByName(search: String, pgbl: Pageable): Page<Routes> {
@@ -50,12 +52,16 @@ class RouteService: IRouteService{
         return repository.save(routes)
     }
 
+    override fun deleteAll(id: List<Long>) {
+        repository.deleteAll(repository.findAllById(id))
+    }
+
     override fun findAll(pageable: Pageable?): Page<Routes>? {
         TODO("Not yet implemented")
     }
 
     override fun findAll(): MutableIterable<Routes>? {
-        TODO("Not yet implemented")
+        return repository.findAll()
     }
 
     override fun findById(id: Long): Routes {

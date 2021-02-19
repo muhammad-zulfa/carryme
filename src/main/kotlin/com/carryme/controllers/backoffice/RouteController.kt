@@ -51,11 +51,19 @@ class RouteController(
                 return successResponse(service.findById(id))!!
         }
 
-        @RequestMapping("delete/{id}",method = [RequestMethod.DELETE])
+        @RequestMapping("delete",method = [RequestMethod.POST])
         fun delete(
-                @PathVariable("id") id: Long
+                @RequestBody id: List<Long>
         ): BaseResponse {
-                service.delete(id)
+                service.deleteAll(id)
                 return successResponse(HttpStatus.OK)!!
+        }
+
+        @RequestMapping("/all",method = [RequestMethod.GET])
+        fun findAll(
+
+        ): BaseResponse {
+
+                return successResponse(service.findAll())!!
         }
 }

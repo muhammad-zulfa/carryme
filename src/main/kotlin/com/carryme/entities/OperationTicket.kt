@@ -15,6 +15,10 @@ class OperationTicket(val id: Long = 0): BaseEntity(id) {
     @JoinColumn(name = "seat_id")
     var ferrySeats: FerrySeats? = null
 
+    @ManyToOne
+    @JoinColumn(name = "operation_id")
+    var operation: Operation? = null
+
     @Column(name = "booked")
     @JsonProperty("booked",defaultValue = "false")
     var booked: Boolean = false

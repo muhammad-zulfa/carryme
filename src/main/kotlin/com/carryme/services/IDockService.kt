@@ -8,4 +8,5 @@ import org.springframework.data.domain.Pageable
 interface IDockService: IBaseServices<Docks,Long> {
     fun findAllByName(search: String, pgbl: Pageable): Page<Docks>
     fun submit(form: DockRequestDto): Docks
+    fun deleteAll(id: List<Long>)
 }

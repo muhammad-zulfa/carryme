@@ -13,18 +13,18 @@ abstract class BaseEntity(@Id
                           private val id: Long = -1L) {
 
     @Column(name = "created_by",nullable = true)
-    private val createdBy: String? = null
+    var createdBy: String? = null
 
     @Column(name = "updated_by",nullable = true)
-    private val updatedBy: String? = null
+    val updatedBy: String? = null
 
     @Column(name = "created_at",nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private var createdAt: Date? = null
+    var createdAt: Date? = null
 
     @Column(name = "updated_at",nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
-    private var updatedAt: Date? = null
+    var updatedAt: Date? = null
 
     /**
      * Sets createdAt before insert

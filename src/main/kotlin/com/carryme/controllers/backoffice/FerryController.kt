@@ -56,4 +56,12 @@ class FerryController(
         ferryService.delete(id)
         return successResponse(HttpStatus.OK)!!
     }
+
+    @RequestMapping("/all",method = [RequestMethod.GET])
+    fun findAll(
+
+    ): BaseResponse {
+
+        return successResponse(ferryService.findAll())!!
+    }
 }

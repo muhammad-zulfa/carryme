@@ -9,4 +9,5 @@ import org.springframework.data.domain.Pageable
 interface IRouteService: IBaseServices<Routes,Long> {
     fun findAllByName(search: String, pgbl: Pageable): Page<Routes>
     fun submit(form: RouteRequestDto): Routes?
+    fun deleteAll(id: List<Long>)
 }
