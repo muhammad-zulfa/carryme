@@ -19,7 +19,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-class WebSecurityConfig: WebSecurityConfigurerAdapter() {
+class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
     lateinit var userDetailService: UserDetailService
@@ -29,14 +29,16 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
         http.cors().and().csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/auth").permitAll()
-                .antMatchers("/auth/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        http.addFilterBefore(jwtAuthFilter,UsernamePasswordAuthenticationFilter::class.java)
+            .authorizeRequests()
+            .antMatchers("/auth").permitAll()
+            .antMatchers("/auth/**").permitAll()
+            .antMatchers("/backoffice/sales/proof/**").permitAll()
+            .antMatchers("/public/**").permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
@@ -49,7 +51,7 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
     }
 
     @Bean
-    fun passwordEncoder() : PasswordEncoder{
+    fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder(12)
     }
 }

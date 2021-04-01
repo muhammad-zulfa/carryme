@@ -49,4 +49,10 @@ data class User(val id: Long = 0): BaseEntity(id) {
             inverseJoinColumns = [JoinColumn(name = "role_id", referencedColumnName = "id")]
     )
     var roles: Collection<Role>? = null
+
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(
+        name = "guest_user",
+    )
+    var guestUser: User? = null
 }

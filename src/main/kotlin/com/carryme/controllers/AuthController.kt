@@ -12,7 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 
-@CrossOrigin(origins = ["*"], maxAge = 3600)
+@CrossOrigin(origins = ["*","localhost:3001"], maxAge = 3600)
 @RestController
 @RequestMapping(value = ["/auth"])
 class AuthController(

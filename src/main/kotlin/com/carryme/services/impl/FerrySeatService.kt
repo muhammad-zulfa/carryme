@@ -43,7 +43,7 @@ class FerrySeatService: IFerrySeatService{
                 temp = deck
             }
             rows.add(it)
-            if(rows.size == 4){
+            if(rows.size == 6){
                 mergedRows.add(rows.toList())
                 rows.clear()
                 resp.put(deck,mergedRows)
@@ -82,7 +82,7 @@ class FerrySeatService: IFerrySeatService{
             seat.seatRow = rowArray[row]
             seat.seatCode = x
             seats.add( seat )
-            if(x % 4 == 0){
+            if(x % 6 == 0){
                 row++
             }
         }

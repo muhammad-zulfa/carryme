@@ -13,7 +13,9 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
+import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.time.days
 
 
 @Service
@@ -162,6 +164,28 @@ class OperationTicketService: IOperationTicketService{
         }
 
         return operationTicketRepository.save(ticket)
+    }
+
+    override fun findAllOperationByDepartureAndGuest(
+        departure: String,
+        guest: Int,
+        origin: Long,
+        destination: Long,
+        pgbl: Pageable
+    ): Page<Operation>? {
+        val route: Routes? = routeRepository.findByOriginIdAndDestinationId(origin,destination)
+        if(route != null){
+            val sdf = SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
+            val now = Calendar.getInstance();
+            val dep = SimpleDateFormat("yyyy-MM-dd").parse(departure)
+            now.time = dep
+            now.add(Calendar.HOUR,2)
+            val coba: String = sdf.format(now.time)
+            val operation = operationRepository.findAllByRoutesIdAndDepartureGreaterThanEqual(route.id,now.time,pgbl)
+            return operation
+        }else{
+            return null;
+        }
     }
 
     override fun findAll(pageable: Pageable?): Page<OperationTicket>? {

@@ -28,6 +28,10 @@ data class FerrySeats(val id: Long = 0): BaseEntity(id) {
     @JsonProperty("seat_row")
     var seatRow: String? = null
 
+    @Column(name = "is_enable")
+    @JsonProperty("is_enable")
+    var isEnable: Boolean? = true
+
     @ManyToOne
     @JoinColumn(name = "ferry_id")
     var ferry: Ferry? = null

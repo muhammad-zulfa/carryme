@@ -14,4 +14,11 @@ interface IOperationTicketService: IBaseServices<OperationTicket,Long> {
     fun findOperationById(id: Long) : Operation
     fun findOperationTicketSeat(operationId: Long, deckNumber: Int): Map<String,List<List<OperationTicketSeatResponse>>>
     fun bookSeat(id: Long, form: UserData): OperationTicket
+    fun findAllOperationByDepartureAndGuest(
+        departure: String,
+        guest: Int,
+        origin: Long,
+        destination: Long,
+        pgbl: Pageable
+    ): Page<Operation>?
 }

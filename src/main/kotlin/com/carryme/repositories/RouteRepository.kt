@@ -9,5 +9,6 @@ interface RouteRepository: CrudRepository<Routes,Long> {
     fun findAllByOriginId(origin: Long) : List<Routes>
     fun findAllByDestinationId(destination: Long): List<Routes>
     fun findAllByNameLike(search: String, pgbl: Pageable): Page<Routes>
+    fun findByOriginIdAndDestinationId(origin: Long, destination: Long): Routes?
 
 }
