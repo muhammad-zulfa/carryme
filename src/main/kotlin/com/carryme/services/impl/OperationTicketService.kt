@@ -181,8 +181,7 @@ class OperationTicketService: IOperationTicketService{
             now.time = dep
             now.add(Calendar.HOUR,2)
             val coba: String = sdf.format(now.time)
-            val operation = operationRepository.findAllByRoutesIdAndDepartureGreaterThanEqual(route.id,now.time,pgbl)
-            return operation
+            return operationRepository.findAllByRoutesIdAndDepartureGreaterThanEqual(route.id,now.time,pgbl)
         }else{
             return null;
         }
