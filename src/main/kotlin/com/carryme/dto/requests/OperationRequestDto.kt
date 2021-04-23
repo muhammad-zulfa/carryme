@@ -9,6 +9,6 @@ import javax.persistence.*
 data class OperationRequestDto(
     var id: Long? = null,
     var ferry: Long? = null,
-    var departure: Date? = null,
+    var departure: String? = null,
     var route: Long? = null
 )

@@ -2,7 +2,6 @@ package com.carryme.controllers.backoffice
 
 import com.carryme.controllers.BaseController
 import com.carryme.dto.requests.OperationRequestDto
-import com.carryme.dto.requests.RouteRequestDto
 import com.carryme.dto.requests.UserData
 import com.carryme.dto.response.BaseResponse
 import com.carryme.entities.Operation
@@ -47,7 +46,7 @@ class TicketOperationController(
         fun get(
                 @PathVariable("id") id: Long
         ): BaseResponse {
-                return successResponse(service.findOperationById(id))!!
+                return successResponse(service.findOperationById(id, null, null))!!
         }
 
         @RequestMapping("delete",method = [RequestMethod.POST])
@@ -61,9 +60,10 @@ class TicketOperationController(
         @RequestMapping("seat-operation/{id}",method = [RequestMethod.GET])
         fun seatOperation(
                 @PathVariable id: Long,
-                @RequestParam deckNumber: Int
+                @RequestParam deckNumber: Int,
+                @RequestParam routeId: Long
         ): BaseResponse {
-                return successResponse(service.findOperationTicketSeat(id,deckNumber))!!
+                return successResponse(service.findOperationTicketSeat(routeId, id,deckNumber))!!
         }
 
         @RequestMapping("book-seat/{id}",method = [RequestMethod.POST])

@@ -1,5 +1,7 @@
 package com.carryme.dto.requests
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 class RouteRequestDto {
 
     var id: Long? = null
@@ -13,4 +15,7 @@ class RouteRequestDto {
     var eta: Int? = null
 
     var price: Int? = null
+
+    @JsonProperty("operation_routes_id")
+    var operationRoutesId: Long? = null
 }

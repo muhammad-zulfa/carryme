@@ -28,5 +28,8 @@ class UserData {
     @JsonProperty("is_guest")
     var isGuest: Boolean = true
 
-    var active = false 
+    var active = false
+
+    @JsonProperty("seat_id")
+    var seatId: Long? = null
 }

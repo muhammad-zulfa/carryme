@@ -1,10 +1,12 @@
 package com.carryme.services.impl
 
 import com.carryme.dto.requests.RouteRequestDto
+import com.carryme.entities.OperationRoutes
 import com.carryme.entities.Routes
 import com.carryme.repositories.DockRepository
 import com.carryme.repositories.OperationRouteRepository
 import com.carryme.repositories.RouteRepository
+import com.carryme.services.IOperationRouteService
 import com.carryme.services.IRouteService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -12,21 +14,19 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
-class RouteService: IRouteService{
+class OperationRouteService: IOperationRouteService{
 
     @Autowired
-    private lateinit var repository: RouteRepository
+    private lateinit var repository: OperationRouteRepository
     @Autowired
     private lateinit var dockRepository: DockRepository
-    @Autowired
-    private lateinit var operationRouteRepository: OperationRouteRepository
 
-    override fun findAllByName(routeOperation: Long, search: String, pgbl: Pageable): Page<Routes> {
-        return repository.findAllByOperationRoutesIdAndNameLike(routeOperation,search,pgbl)
+    override fun findAllByName(search: String, pgbl: Pageable): Page<OperationRoutes> {
+        return repository.findAllByNameLike(search,pgbl)
     }
 
-    override fun submit(form: RouteRequestDto): Routes {
-        var routes = Routes()
+    override fun submit(form: RouteRequestDto): OperationRoutes {
+        var routes = OperationRoutes()
         if (form.id != null){
             routes = repository.findById(form.id!!).get().apply {
                 this.origin = dockRepository.findById(form.origin!!).get()
@@ -34,16 +34,14 @@ class RouteService: IRouteService{
                 this.eta = form.eta
                 this.name = form.name
                 this.price = form.price
-                this.operationRoutes = operationRouteRepository.findById(form.operationRoutesId!!).get()
             }
         }else {
-            routes = Routes().apply {
+            routes = OperationRoutes().apply {
                 this.origin = dockRepository.findById(form.origin!!).get()
                 this.destination = dockRepository.findById(form.destination!!).get()
                 this.eta = form.eta
                 this.name = form.name
                 this.price = form.price
-                this.operationRoutes = operationRouteRepository.findById(form.operationRoutesId!!).get()
             }
         }
         return repository.save(routes)
@@ -53,23 +51,19 @@ class RouteService: IRouteService{
         repository.deleteAll(repository.findAllById(id))
     }
 
-    override fun findAllByOperation(operation: Long): List<Routes> {
-        return repository.findAllByOperationRoutesId(operation)
-    }
-
-    override fun findAll(pageable: Pageable?): Page<Routes>? {
+    override fun findAll(pageable: Pageable?): Page<OperationRoutes>? {
         TODO("Not yet implemented")
     }
 
-    override fun findAll(): MutableIterable<Routes>? {
+    override fun findAll(): MutableIterable<OperationRoutes>? {
         return repository.findAll()
     }
 
-    override fun findById(id: Long): Routes {
+    override fun findById(id: Long): OperationRoutes {
         return repository.findById(id).get()
     }
 
-    override fun save(entity: Routes): Routes {
+    override fun save(entity: OperationRoutes): OperationRoutes {
         TODO("Not yet implemented")
     }
 

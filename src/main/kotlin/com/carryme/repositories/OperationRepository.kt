@@ -7,6 +7,6 @@ import org.springframework.data.domain.Pageable
 import java.util.*
 
 interface OperationRepository: CrudRepository<Operation,Long> {
-    fun findAllByRoutesIdAndDepartureGreaterThanEqual(routes: Long,departure: Date,pageable: Pageable): Page<Operation>
+    fun findAllByRoutesIdAndDepartureGreaterThanEqualAndDepartureLessThanEqual(routes: Long,departure: Date,departureMax: Date): List<Operation>
     fun findAllByFerryNameLike(name: String, pageable: Pageable): Page<Operation>
 }

@@ -3,7 +3,9 @@ package com.carryme.controllers.backoffice
 import com.carryme.controllers.BaseController
 import com.carryme.dto.requests.RouteRequestDto
 import com.carryme.dto.response.BaseResponse
+import com.carryme.entities.OperationRoutes
 import com.carryme.entities.Routes
+import com.carryme.services.IOperationRouteService
 import com.carryme.services.IRouteService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -13,16 +15,15 @@ import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
-@RequestMapping("/backoffice/route/transit")
+@RequestMapping("/backoffice/operation-route")
 @RestController
 @CrossOrigin(maxAge = 3600,origins = ["*"])
-class RouteController(
+class OperationRouteController(
         @Autowired
-        val service: IRouteService
+        val service: IOperationRouteService
 ) : BaseController() {
-        @RequestMapping("/{routeOperation}",method = [RequestMethod.GET])
+        @RequestMapping("",method = [RequestMethod.GET])
         fun find(
-                @PathVariable(value = "routeOperation") routeOperation: Long,
                 @RequestParam(value = "search") search:String,
                 @RequestParam(value = "pageNumber") page:Int,
                 @RequestParam(value = "sortOrder") sortOrder:String,
@@ -31,7 +32,7 @@ class RouteController(
         ): BaseResponse {
                 val sort: Sort = if(sortOrder == "desc") Sort.by(sortField).descending() else Sort.by(sortField).ascending()
                 val pgbl: Pageable = PageRequest.of(page, pageSize, sort)
-                val pages: Page<Routes> = service.findAllByName(routeOperation,"%$search%",pgbl)
+                val pages: Page<OperationRoutes> = service.findAllByName("%$search%",pgbl)
                 return successResponse(pages)!!
         }
 
@@ -42,7 +43,7 @@ class RouteController(
                 return successResponse(service.submit(form))!!
         }
 
-        @RequestMapping("/detail/{id}",method = [RequestMethod.GET])
+        @RequestMapping("/{id}",method = [RequestMethod.GET])
         fun get(
                 @PathVariable("id") id: Long
         ): BaseResponse {
@@ -57,11 +58,11 @@ class RouteController(
                 return successResponse(HttpStatus.OK)!!
         }
 
-        @RequestMapping("/all/{id}",method = [RequestMethod.GET])
+        @RequestMapping("/all",method = [RequestMethod.GET])
         fun findAll(
-                @PathVariable("id") operation: Long
+
         ): BaseResponse {
 
-                return successResponse(service.findAllByOperation(operation))!!
+                return successResponse(service.findAll())!!
         }
 }

@@ -46,6 +46,9 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.11.2")
     implementation("io.jsonwebtoken:jjwt-impl:0.11.2")
     implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf:2.4.1")
+    implementation("org.springframework.boot:spring-boot-starter-mail:2.4.1")
+    implementation("org.springframework:spring-context-support:5.2.8.RELEASE")
     runtimeOnly("com.h2database:h2")
     implementation("org.springframework.boot:spring-boot-configuration-processor")
 }

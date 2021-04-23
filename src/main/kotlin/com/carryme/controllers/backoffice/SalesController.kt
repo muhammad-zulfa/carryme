@@ -2,6 +2,7 @@ package com.carryme.controllers.backoffice
 
 import com.carryme.controllers.BaseController
 import com.carryme.dto.requests.DockRequestDto
+import com.carryme.dto.requests.Mail
 import com.carryme.dto.response.BaseResponse
 import com.carryme.dto.response.SalesStatusRequestDto
 import com.carryme.entities.Sales
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile
 import org.springframework.http.ResponseEntity
 
 import org.springframework.core.io.ClassPathResource
+import org.springframework.core.io.Resource
 import org.springframework.http.MediaType
 import org.springframework.util.StreamUtils
 
@@ -23,6 +25,14 @@ import org.springframework.web.bind.annotation.RequestMethod
 
 import org.springframework.web.bind.annotation.RequestMapping
 import java.io.IOException
+import java.net.MalformedURLException
+
+import org.springframework.core.io.UrlResource
+import org.springframework.http.HttpHeaders
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.util.HashMap
+import javax.servlet.http.HttpServletRequest
 
 
 @RequestMapping("/backoffice/sales")
@@ -78,13 +88,35 @@ class SalesController(
         IOException::class
     )
     fun getImage(
-            @RequestParam("path") path: String
-    ): ResponseEntity<ByteArray?>? {
-        val imgFile = ClassPathResource(path)
-        val bytes: ByteArray = StreamUtils.copyToByteArray(imgFile.inputStream)
-        return ResponseEntity
-            .ok()
-            .contentType(MediaType.IMAGE_JPEG)
-            .body(bytes)
+            @RequestParam("path") pat: String,
+            request: HttpServletRequest
+    ): ResponseEntity<Resource?>? {
+        val path: Path = Paths.get(pat).toAbsolutePath()
+
+        var resource: Resource
+        try {
+            resource = UrlResource(path.toUri())
+        } catch (e: MalformedURLException) {
+            throw RuntimeException("Issue in reading the file", e)
+        }
+
+        var mimeType: String
+        try {
+            mimeType = request.getServletContext().getMimeType(resource.getFile().absolutePath)
+        } catch (e: IOException) {
+            mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE
+        }
+        return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType(mimeType))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName="+resource.getFilename())
+            .header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + resource.getFilename())
+            .body(resource)
+
+//        val imgFile = ClassPathResource(path)
+//        val bytes: ByteArray = StreamUtils.copyToByteArray(imgFile.inputStream)
+//        return ResponseEntity
+//            .ok()
+//            .contentType(MediaType.IMAGE_JPEG)
+//            .body(bytes)
     }
 }

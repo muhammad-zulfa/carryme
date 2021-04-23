@@ -1,7 +1,9 @@
 package com.carryme.jobs
 
+import com.carryme.services.ISalesService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.text.SimpleDateFormat
@@ -15,9 +17,13 @@ class TimeReportScheduler {
 
     private val dateFormat = SimpleDateFormat("HH:mm:ss")
 
+    @Autowired
+    private lateinit var salesService: ISalesService
 
-    //@Scheduled(fixedRate = 5000)
+
+    @Scheduled(fixedRate = 1*60*1000)
     fun reportCurrentTime() {
-        log.info("The time is now {}", dateFormat.format(Date()))
+        log.info("Checking for Expired Payment {}", dateFormat.format(Date()))
+        salesService.restoreExpiredPayment()
     }
 }

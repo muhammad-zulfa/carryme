@@ -1,5 +1,6 @@
 package com.carryme.entities
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import javax.persistence.*
 
@@ -29,6 +30,7 @@ data class User(val id: Long = 0): BaseEntity(id) {
     @Column(nullable = true)
     var username: String? = null
 
+    @JsonIgnore
     @Column(nullable = true)
     var password: String? = null
 
@@ -38,10 +40,12 @@ data class User(val id: Long = 0): BaseEntity(id) {
 
     var active = false
 
+    @JsonIgnore
     @Column(name = "token_expired")
     @JsonProperty("token_expired")
     var tokenExpired = false
 
+    @JsonIgnore
     @ManyToMany(fetch=FetchType.EAGER)
     @JoinTable(
             name = "user_role",
@@ -50,6 +54,7 @@ data class User(val id: Long = 0): BaseEntity(id) {
     )
     var roles: Collection<Role>? = null
 
+    @JsonIgnore
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(
         name = "guest_user",

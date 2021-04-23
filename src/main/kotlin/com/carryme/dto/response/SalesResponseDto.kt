@@ -9,6 +9,8 @@ import javax.persistence.Temporal
 import javax.persistence.TemporalType
 
 class SalesResponseDto {
+    var id: Long? = null
+
     @JsonProperty("total_price")
     var totalPrice: Int? = null
 

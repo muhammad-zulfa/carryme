@@ -1,5 +1,7 @@
 package com.carryme.utils
 
+import com.carryme.CarrymeApplication
+import com.carryme.dto.requests.Mail
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationListener
 import org.springframework.context.event.ContextRefreshedEvent
@@ -11,6 +13,9 @@ import com.carryme.entities.User
 import com.carryme.repositories.PrivilegeRepository
 import com.carryme.repositories.RoleRepository
 import com.carryme.repositories.UserRepository
+import com.carryme.services.EmailSenderService
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.util.*
 import javax.transaction.Transactional
 

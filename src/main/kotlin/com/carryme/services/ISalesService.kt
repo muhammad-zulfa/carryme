@@ -11,4 +11,7 @@ interface ISalesService: IBaseServices<Sales,Long> {
     fun submitProof(id: Long, file: MultipartFile): Sales
     fun detail(id: Long): SalesResponseDto
     fun updateStatus(id: Long, status: String): Sales
+    fun restoreExpiredPayment()
+    fun uploadPaymentProof(id: Long, file: MultipartFile): Sales
+
 }

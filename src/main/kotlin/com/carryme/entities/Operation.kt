@@ -17,7 +17,7 @@ class Operation(val id: Long = 0): BaseEntity(id) {
     var departure: Date? = null
 
     @ManyToOne
-    @JoinColumn(name = "route_id")
-    var routes: Routes? = null
+    @JoinColumn(name = "operation_route_id")
+    var routes: OperationRoutes? = null
 
 }
