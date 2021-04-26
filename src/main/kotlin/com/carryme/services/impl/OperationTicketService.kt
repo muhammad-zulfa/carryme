@@ -227,7 +227,7 @@ class OperationTicketService: IOperationTicketService{
                 now.add(Calendar.HOUR, 2)
                 val coba: String = sdf.format(now.time)
 
-                val ticketOps: List<Long> = operationTicketRepository.findDistinctByRoutesId(it.id)
+                val ticketOps: List<Long> = operationTicketRepository.findDistinctByRoutesId(it.id, now.time)
 
                 ticketOps.map { p ->
                     val operationParent = operationRepository.findById(p).get().apply {

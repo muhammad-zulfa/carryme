@@ -14,6 +14,6 @@ interface OperationTicketRepository: CrudRepository<OperationTicket,Long> {
     fun findOneByRoutesIdAndOperationIdAndFerrySeatsIdAndFerryId(routeId: Long, operationId: Long, id: Long, id1: Long): OperationTicket
     fun findAllByOperationIdAndRoutesIdAndFerrySeatsId(operationId: Long,routeId: Long, seatId:Long): List<OperationTicket>
 
-    @Query("select distinct(o.operation.id) from OperationTicket o where o.routes.id = :routes")
-    fun findDistinctByRoutesId(@Param("routes") id: Long): List<Long>
+    @Query("select distinct(o.operation.id) from OperationTicket o where o.routes.id = :routes and o.operation.departure >= :dep")
+    fun findDistinctByRoutesId(@Param("routes") id: Long, @Param("dep") dep: Date): List<Long>
 }

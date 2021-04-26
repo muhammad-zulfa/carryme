@@ -29,6 +29,8 @@ import com.carryme.utils.FileUploadUtil
 import com.carryme.utils.SetupDataLoader
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.text.SimpleDateFormat
+import java.util.concurrent.TimeUnit
 
 
 @Service
@@ -119,21 +121,48 @@ class SalesService: ISalesService{
         }
         if(status == "finish"){
             log.info("START... Sending email")
-            val model: MutableMap<String, Any> = HashMap()
-            model["name"] = "Developer!"
-            model["location"] = "United States"
-            model["sign"] = "Java Developer"
-            val mail = Mail(
-                from = "no-reply@zulfa.tech",
-                to = userEntity.username!!,
-                subject = "Voucher Issued (E-ticket Dishub)",
-                template = "e-ticket",
-                props = model
-            )
-            emailService!!.sendEmail(mail)
+            val ticketSales = ticketSalesRepository.findAllBySalesId(salesEntity.id)
+            val pattern = "yyyy-MM-dd HH:mm"
+            val simpleDateFormat = SimpleDateFormat(pattern)
+            val calendar = Calendar.getInstance()
+            ticketSales.forEach {
+                val model: MutableMap<String, Any> = HashMap()
+                model["name"] = it.user!!.fullname!!
+                model["origin"] = it.ticket!!.routes!!.origin!!.name
+                model["destination"] = it.ticket!!.routes!!.destination!!.name
+                model["shortOrigin"] = getInitialWord(model["origin"].toString())
+                model["shortDestination"] = getInitialWord(model["destination"].toString())
+                model["qr"] = "https://chart.googleapis.com/chart?cht=qr&chl=https://zulfa.tech/check/${it.id}&choe=UTF-8&chs=110x110"
+                model["ferryName"] = it.ticket!!.ferry!!.name!!
+                model["departure"] = simpleDateFormat.format(it.ticket!!.operation!!.departure!!)
+                calendar.time = it.ticket!!.operation!!.departure!!
+                calendar.add(Calendar.MINUTE, -30)
+                model["gateClosed"] = simpleDateFormat.format(calendar.time).split(" ")[1]
+                model["seat"] = "${it.ticket!!.ferrySeats!!.seatRow}${it.ticket!!.ferrySeats!!.seatCode}"
+                calendar.add(Calendar.MINUTE, 30+it.ticket!!.routes!!.eta!!)
+                val diff = calendar.time.time - it.ticket!!.operation!!.departure!!.time
+                model["duration"] = "${TimeUnit.MILLISECONDS.toHours(diff)}j ${TimeUnit.MILLISECONDS.toMinutes(diff)%60}m"
+                val mail = Mail(
+                    from = "no-reply@zulfa.tech",
+                    to = userEntity.username!!,
+                    subject = "Voucher Issued (E-ticket Dishub)",
+                    template = "e-ticket",
+                    props = model
+                )
+                emailService!!.sendEmail(mail)
+                log.info("Sent To ${it.user!!.fullname}")
+            }
             log.info("END... Email sent success")
         }
         return repository.save(salesEntity)
+    }
+
+    private fun getInitialWord(s: String): String{
+        val string = StringBuilder()
+        s.split(" ").forEach {
+            string.append(it.substring(0,1))
+        }
+        return string.toString()
     }
 
     override fun restoreExpiredPayment() {
