@@ -154,12 +154,15 @@ class OperationTicketService: IOperationTicketService{
     }
 
     override fun bookSeat(id: Long, form: UserData): OperationTicket{
+        val createdAt = Date()
         val ticket = operationTicketRepository.findById(id).get()
         val guest: User = User()
         BeanUtils.copyProperties(form,guest)
+        guest.createdAt = createdAt
+        guest.updatedAt = createdAt
         userRepository.save(guest)
+
         val principal: UserDetails = SecurityContextHolder.getContext().authentication.principal as UserDetails
-        val createdAt = Date()
         val creator: User = userRepository.findByUsername(principal.username)!!
         val sales: Sales = Sales().apply {
             status = "paid"
@@ -239,7 +242,7 @@ class OperationTicketService: IOperationTicketService{
                         if (this.routes!!.origin!!.id != it.origin!!.id) {
                             val transits =
                                 detailRouteRepository.findFirstByOperationRoutesIdAndOriginIdAndDestinationId(
-                                    this.id,
+                                    this.routes!!.id,
                                     it.origin!!.id,
                                     it.destination!!.id
                                 )
@@ -271,6 +274,8 @@ class OperationTicketService: IOperationTicketService{
                 val check = userRepository.findByUsername(form.username)
                 if (check != null){
                     creator = check
+                    creator.phone = form.phone
+                    userRepository.save(creator)
                 }else{
                     creator = userRepository.save(User().apply {
                         fullname = form.fullname
@@ -285,20 +290,29 @@ class OperationTicketService: IOperationTicketService{
             var total = 0;
             val ticketSalesData = mutableListOf<TicketSales>()
             form.pax.forEach {
-                val ticket = operationTicketRepository.findOneByRoutesIdAndOperationIdAndFerrySeatsIdAndFerryId(form.routeId!!,form.operationId!!,it.seatId!!,form.ferryId!!)
-                val guest: User = User()
-                BeanUtils.copyProperties(it,guest)
-                userRepository.save(guest.apply {
-                    guestUser = creator
-                })
                 val createdAt = Date()
+                val ticket = operationTicketRepository.findOneByRoutesIdAndOperationIdAndFerrySeatsIdAndFerryId(form.routeId!!,form.operationId!!,it.seatId!!,form.ferryId!!)
+                var guest: User = User()
+                if(it.id != null){
+                    guest = userRepository.findById(it.id!!).get()
+                    BeanUtils.copyProperties(it, guest,"password")
+                    userRepository.save(guest)
+                }else {
+                    BeanUtils.copyProperties(it, guest)
+                    userRepository.save(guest.apply {
+                        guestUser = creator
+                        this.createdAt = createdAt
+                        this.updatedAt = createdAt
+                    })
+                }
+
                 val exp = Calendar.getInstance()
                 exp.time = createdAt
-                exp.add(Calendar.MINUTE,30)
+                exp.add(Calendar.MINUTE,10)
                 if(sales == null) {
                     sales = salesRepository.save(Sales().apply {
                         status = "booked"
-                        totalPrice = ticket.price
+                        totalPrice = ticket.routes!!.price
                         paymentMethod = "transfer"
                         createdBy = creator.id.toString()
                         paymentExpired = exp.time

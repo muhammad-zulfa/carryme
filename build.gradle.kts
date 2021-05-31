@@ -49,6 +49,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf:2.4.1")
     implementation("org.springframework.boot:spring-boot-starter-mail:2.4.1")
     implementation("org.springframework:spring-context-support:5.2.8.RELEASE")
+    implementation("org.apache.poi:poi:3.15")
+    implementation("org.apache.poi:poi-ooxml:3.15")
     runtimeOnly("com.h2database:h2")
     implementation("org.springframework.boot:spring-boot-configuration-processor")
 }

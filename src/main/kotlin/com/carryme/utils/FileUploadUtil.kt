@@ -18,7 +18,7 @@ class FileUploadUtil {
             uploadDir: String, fileName: String,
             multipartFile: MultipartFile
         ) {
-            val uploadPath: Path = Paths.get("classpath:/$uploadDir")
+            val uploadPath: Path = Paths.get(uploadDir)
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath)
             }

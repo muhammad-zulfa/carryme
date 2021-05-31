@@ -4,6 +4,7 @@ import com.carryme.dto.requests.LoginRequestDto
 import com.carryme.dto.response.BaseResponse
 import com.carryme.dto.response.UserResponseDto
 import com.carryme.entities.User
+import com.carryme.repositories.UserRepository
 import com.carryme.services.UserDetailService
 import com.carryme.utils.JWTUtil
 import org.springframework.beans.BeanUtils
@@ -28,6 +29,8 @@ class UserController(
         @Autowired
         val userDetailsService: UserDetailService,
         @Autowired
+        val userRepository: UserRepository,
+        @Autowired
         val jwtUtil: JWTUtil
 ) : BaseController(){
 
@@ -37,6 +40,28 @@ class UserController(
         val u: User = userDetailsService.findByUsername(principal.name)
         var response = UserResponseDto()
         BeanUtils.copyProperties(u,response)
+        val roles = mutableListOf<String>()
+        u.roles!!.forEach {
+            roles.add(it.name!!)
+        }
+        response.roles = roles
+        return successResponse(response)!!
+    }
+
+    @RequestMapping("/all-guest", method = [RequestMethod.GET])
+    fun allGuest(principal: Principal): BaseResponse {
+        val u: User = userDetailsService.findByUsername(principal.name)
+        var guestUser = userRepository.findAllByGuestUserId(u.id)
+        var response: MutableList<UserResponseDto> = mutableListOf()
+        val userDtoM = UserResponseDto()
+        BeanUtils.copyProperties(u,userDtoM)
+        response.add(userDtoM)
+        guestUser.forEach {
+            val userDto = UserResponseDto()
+            BeanUtils.copyProperties(it,userDto)
+            response.add(userDto)
+        }
+
         return successResponse(response)!!
     }
 

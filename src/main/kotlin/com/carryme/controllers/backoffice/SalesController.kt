@@ -7,6 +7,7 @@ import com.carryme.dto.response.BaseResponse
 import com.carryme.dto.response.SalesStatusRequestDto
 import com.carryme.entities.Sales
 import com.carryme.services.ISalesService
+import com.carryme.services.ITicketSalesService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -29,18 +30,28 @@ import java.net.MalformedURLException
 
 import org.springframework.core.io.UrlResource
 import org.springframework.http.HttpHeaders
+import org.springframework.security.access.prepost.PreAuthorize
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.HashMap
 import javax.servlet.http.HttpServletRequest
+import org.apache.poi.hssf.usermodel.HeaderFooter.file
+
+import java.io.FileInputStream
+
+import org.springframework.core.io.InputStreamResource
+import java.io.File
 
 
 @RequestMapping("/backoffice/sales")
 @RestController
 @CrossOrigin(maxAge = 3600, origins = ["*"])
+@PreAuthorize("hasAnyRole('ADMIN')")
 class SalesController(
     @Autowired
-    val service: ISalesService
+    val service: ISalesService,
+    @Autowired
+    val ticketSalesService: ITicketSalesService
 ) : BaseController() {
     @RequestMapping("", method = [RequestMethod.GET])
     fun find(
@@ -118,5 +129,30 @@ class SalesController(
 //            .ok()
 //            .contentType(MediaType.IMAGE_JPEG)
 //            .body(bytes)
+    }
+
+    @GetMapping("/download-report")
+    fun downloadReport(
+        @RequestParam("date_start")
+        dateStart: String,
+        @RequestParam("date_end")
+        dateEnd: String
+    ) : ResponseEntity<InputStreamResource> {
+        //create file
+        val path = ticketSalesService.getReport(dateStart, dateEnd)
+
+        //download
+        val file = File(path)
+        val resource = InputStreamResource(FileInputStream(file))
+        val headers = HttpHeaders()
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate")
+        headers.add("Pragma", "no-cache")
+        headers.add("Expires", "0")
+
+        return ResponseEntity.ok()
+            .headers(headers)
+            .contentLength(file.length())
+            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+            .body(resource)
     }
 }

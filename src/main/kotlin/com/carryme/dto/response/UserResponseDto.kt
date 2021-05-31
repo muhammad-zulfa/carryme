@@ -1,8 +1,11 @@
 package com.carryme.dto.response
 
+import com.carryme.entities.Role
 import com.fasterxml.jackson.annotation.JsonProperty
 
 class UserResponseDto {
+    var id: Long? = null
+
     @JsonProperty("fullname")
     var fullname: String? = null
 
@@ -27,4 +30,6 @@ class UserResponseDto {
     var isGuest: Boolean = true
 
     var active = false
+
+    var roles: List<String>? = null
 }

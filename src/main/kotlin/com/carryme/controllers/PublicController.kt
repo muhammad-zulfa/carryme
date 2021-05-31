@@ -82,6 +82,6 @@ class PublicController(
         @PathVariable("id") id: Long,
         @RequestParam("image") multipartFile: MultipartFile
     ): BaseResponse {
-        return successResponse(salesService.submitProof(id,multipartFile))!!
+        return successResponse(salesService.uploadPaymentProof(id,multipartFile))!!
     }
 }

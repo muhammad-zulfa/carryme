@@ -52,7 +52,7 @@ class SalesService: ISalesService{
     private val log: Logger = LoggerFactory.getLogger(SetupDataLoader::class.java)
 
     override fun findAllByName(name: String, pgbl: Pageable): Page<Sales> {
-        return repository.findAllByStatusLike(name,pgbl)
+        return repository.findAllByStatusLikeAndStatusNotOrderByCreatedAtDescStatusDesc(name,"payment_expired",pgbl)
     }
 
     override fun submitProof(id: Long, file: MultipartFile): Sales {
@@ -167,7 +167,8 @@ class SalesService: ISalesService{
 
     override fun restoreExpiredPayment() {
         val now = Date()
-        val sales = repository.findAllByStatusAndPaymentExpiredLessThanEqual("booked",now)
+        val list = listOf("booked","reject")
+        val sales = repository.findAllByStatusInAndPaymentExpiredLessThanEqual(list,now)
 
         if(sales.isNotEmpty()){
             sales.forEach {
@@ -192,12 +193,14 @@ class SalesService: ISalesService{
     }
 
     override fun uploadPaymentProof(id: Long, file: MultipartFile): Sales {
+        val date = Date()
         val fileName: String = StringUtils.cleanPath(file.originalFilename!!)
         val uploadDir = "upload/payment-proof/${id}"
         FileUploadUtil.saveFile(uploadDir, fileName, file)
         val sales = repository.findById(id).get()
         sales.paymentProof = fileName
         sales.status = "paid"
+        sales.updatedAt = date
         repository.save(sales)
         return sales
     }

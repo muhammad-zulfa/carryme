@@ -3,6 +3,7 @@ package com.carryme.dto.requests
 import com.fasterxml.jackson.annotation.JsonProperty
 
 class UserData {
+    var id: Long? = null
     @JsonProperty("fullname")
     var fullname: String? = null
 

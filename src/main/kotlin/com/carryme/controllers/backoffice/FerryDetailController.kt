@@ -5,11 +5,13 @@ import com.carryme.dto.requests.FerryDetailRequestDto
 import com.carryme.dto.response.BaseResponse
 import com.carryme.services.IFerryDetailService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RequestMapping("/backoffice/ferry-detail")
 @CrossOrigin(origins = ["*"],maxAge = 3600)
 @RestController
+@PreAuthorize("hasAnyRole('ADMIN')")
 class FerryDetailController(
         @Autowired
         val service: IFerryDetailService
