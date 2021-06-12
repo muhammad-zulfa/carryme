@@ -1,7 +1,5 @@
 package com.carryme.repositories
 
-import com.carryme.entities.FerryDetail
-import com.carryme.entities.Operation
 import com.carryme.entities.OperationTicket
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
@@ -14,6 +12,6 @@ interface OperationTicketRepository: CrudRepository<OperationTicket,Long> {
     fun findOneByRoutesIdAndOperationIdAndFerrySeatsIdAndFerryId(routeId: Long, operationId: Long, id: Long, id1: Long): OperationTicket
     fun findAllByOperationIdAndRoutesIdAndFerrySeatsId(operationId: Long,routeId: Long, seatId:Long): List<OperationTicket>
 
-    @Query("select distinct(o.operation.id) from OperationTicket o where o.routes.id = :routes and o.operation.departure >= :dep")
-    fun findDistinctByRoutesId(@Param("routes") id: Long, @Param("dep") dep: Date): List<Long>
+    @Query("select distinct(o.operation.id) from OperationTicket o where o.routes.id = :routes and (o.operation.departure < :end and o.operation.departure > :dep)")
+    fun findDistinctByRoutesId(@Param("routes") id: Long, @Param("dep") dep: Date, end: Date): List<Long>
 }

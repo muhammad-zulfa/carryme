@@ -60,7 +60,7 @@ class OperationTicketService: IOperationTicketService{
         BeanUtils.copyProperties(form,operation)
         operation.ferry = ferryRepository.findById(form.ferry!!).get()
         operation.routes = routeRepository.findById(form.route!!).get()
-        val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.getDefault())
+        val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm")
         operation.departure = format.parse(form.departure)
         operationRepository.save(operation)
 
@@ -224,13 +224,12 @@ class OperationTicketService: IOperationTicketService{
             routes.forEach {
                 val sdf = SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
                 val now = Calendar.getInstance();
-                val dep = SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("$departure 07:00:00")
+                val dep = SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("$departure 00:00:00")
                 val end = SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("$departure 23:59:59")
-                now.time = dep
-                now.add(Calendar.HOUR, 2)
+
                 val coba: String = sdf.format(now.time)
 
-                val ticketOps: List<Long> = operationTicketRepository.findDistinctByRoutesId(it.id, now.time)
+                val ticketOps: List<Long> = operationTicketRepository.findDistinctByRoutesId(it.id, dep, end)
 
                 ticketOps.map { p ->
                     val operationParent = operationRepository.findById(p).get().apply {
