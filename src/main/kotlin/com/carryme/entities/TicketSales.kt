@@ -23,4 +23,6 @@ class TicketSales(val id: Long = 0): BaseEntity(id) {
     @JoinColumn(name = "sales_id")
     var sales: Sales? = null
 
+    @Column(name = "checked_in")
+    var checkedIn: Boolean? = false
 }

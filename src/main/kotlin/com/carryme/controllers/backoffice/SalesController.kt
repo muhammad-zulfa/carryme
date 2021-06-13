@@ -155,4 +155,18 @@ class SalesController(
             .contentType(MediaType.APPLICATION_OCTET_STREAM)
             .body(resource)
     }
+
+    @RequestMapping("/ticket/check/{id}", method = [RequestMethod.GET])
+    fun getTicketSales(
+        @PathVariable("id") id: Long
+    ): BaseResponse {
+        return successResponse(ticketSalesService.checkedIn(id))!!
+    }
+
+    @RequestMapping("/ticket/{id}", method = [RequestMethod.GET])
+    fun getTicketSalesDetail(
+        @PathVariable("id") id: Long
+    ): BaseResponse {
+        return successResponse(ticketSalesService.findById(id))!!
+    }
 }

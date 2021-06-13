@@ -8,6 +8,8 @@ import com.carryme.dto.response.SalesResponseDto
 import com.carryme.entities.*
 import com.carryme.repositories.*
 import com.carryme.services.IOperationTicketService
+import org.apache.poi.ss.usermodel.*
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.springframework.beans.BeanUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -15,6 +17,8 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -371,6 +375,129 @@ class OperationTicketService: IOperationTicketService{
 
     override fun delete(id: Long) {
         TODO("Not yet implemented")
+    }
+
+    override fun getReport(operationId: Long): String {
+        val workbook: Workbook = XSSFWorkbook()
+
+        val sheet: Sheet = workbook.createSheet("Sales")
+        sheet.setColumnWidth(0, 6000)
+        sheet.setColumnWidth(1, 4000)
+        val data = ticketSalesRepository.findReportByOperation(operationId,"finish")
+        //header
+        val header: Row = sheet.createRow(0)
+
+        val headerStyle = workbook.createCellStyle()
+        headerStyle.fillForegroundColor = IndexedColors.AQUA.getIndex()
+        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND)
+
+        val font = (workbook as XSSFWorkbook).createFont()
+        font.fontName = "Arial"
+        font.fontHeightInPoints = 12.toShort()
+        font.bold = true
+        headerStyle.setFont(font)
+
+        var headerCell: Cell = header.createCell(0)
+        headerCell.setCellValue("Customer Name")
+        headerCell.cellStyle = headerStyle
+
+        headerCell = header.createCell(1)
+        headerCell.setCellValue("Customer NIK")
+        headerCell.cellStyle = headerStyle
+
+        headerCell = header.createCell(2)
+        headerCell.setCellValue("Customer Phone")
+        headerCell.cellStyle = headerStyle
+
+        headerCell = header.createCell(3)
+        headerCell.setCellValue("Customer Emergency Number")
+        headerCell.cellStyle = headerStyle
+
+        headerCell = header.createCell(4)
+        headerCell.setCellValue("Customer Type")
+        headerCell.cellStyle = headerStyle
+
+        headerCell = header.createCell(5)
+        headerCell.setCellValue("Travel Route")
+        headerCell.cellStyle = headerStyle
+
+        headerCell = header.createCell(6)
+        headerCell.setCellValue("Ticket Price")
+        headerCell.cellStyle = headerStyle
+
+        headerCell = header.createCell(7)
+        headerCell.setCellValue("Ship Name")
+        headerCell.cellStyle = headerStyle
+
+        headerCell = header.createCell(8)
+        headerCell.setCellValue("Departure Time")
+        headerCell.cellStyle = headerStyle
+
+        headerCell = header.createCell(9)
+        headerCell.setCellValue("Checked In")
+        headerCell.cellStyle = headerStyle
+
+        // content
+        val style = workbook.createCellStyle()
+        style.wrapText = true
+        var rows = 1
+        val formatDateR = SimpleDateFormat("yyyy-MM-dd HH:mm")
+        data.forEach {
+            val row = sheet.createRow(rows)
+            var cell = row.createCell(0)
+            cell.setCellValue(it.user!!.fullname)
+            cell.cellStyle = style
+
+            cell = row.createCell(1)
+            cell.setCellValue(it.user!!.nik)
+            cell.cellStyle = style
+
+            cell = row.createCell(2)
+            cell.setCellValue(it.user!!.phone)
+            cell.cellStyle = style
+
+            cell = row.createCell(3)
+            cell.setCellValue(it.user!!.phoneEmerg)
+            cell.cellStyle = style
+
+            cell = row.createCell(4)
+            cell.setCellValue(it.user!!.paxType)
+            cell.cellStyle = style
+
+            cell = row.createCell(5)
+            cell.setCellValue("${it.ticket!!.routes!!.origin!!.name} to ${it.ticket!!.routes!!.destination!!.name}")
+            cell.cellStyle = style
+
+            cell = row.createCell(6)
+            cell.setCellValue(it.ticket!!.routes!!.price.toString())
+            cell.cellStyle = style
+
+            cell = row.createCell(7)
+            cell.setCellValue(it.ticket!!.ferry!!.name)
+            cell.cellStyle = style
+
+            cell = row.createCell(8)
+            cell.setCellValue(formatDateR.format(it.ticket!!.departure))
+            cell.cellStyle = style
+
+            cell = row.createCell(9)
+            cell.setCellValue(if (it.checkedIn != null && it.checkedIn!!) "Sudah Check In" else "Tidak Check In")
+            cell.cellStyle = style
+
+            rows += 1
+        }
+
+
+        //write to file
+        val currDir = File(".")
+        val path: String = currDir.getAbsolutePath()
+        val fileLocation = path.substring(0, path.length - 1) + "temp-manifesto.xlsx"
+
+        val outputStream = FileOutputStream(fileLocation)
+        workbook.write(outputStream)
+        workbook.close()
+
+        return fileLocation
     }
 
 }

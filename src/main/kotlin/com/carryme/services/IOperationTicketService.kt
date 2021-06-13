@@ -25,4 +25,5 @@ interface IOperationTicketService: IBaseServices<OperationTicket,Long> {
     ): List<Operation>?
 
     fun bookSeatFromCustomer(form: BookSeatRequestDto): SalesResponseDto?
+    fun getReport(operationId: Long): String
 }

@@ -13,4 +13,10 @@ interface TicketSalesRepository: CrudRepository<TicketSales,Long> {
                 "where s.status = ?1 and s.createdAt between ?2 and ?3"
     )
     fun findReport(s: String, start: Date?, end: Date?): List<TicketSales>
+
+    @Query(
+        value = "select ts from TicketSales ts join Sales s on s.id = ts.sales.id " +
+                "where ts.ticket.operation.id = ?1 and s.status = ?2"
+    )
+    fun findReportByOperation(operationId: Long, status: String): List<TicketSales>
 }

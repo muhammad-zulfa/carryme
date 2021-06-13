@@ -175,6 +175,16 @@ class TicketSalesService(
         return fileLocation
     }
 
+    override fun checkedIn(id: Long): TicketSales {
+        val data = repository.findById(id)
+        if(data.isPresent){
+            val ticket = data.get()
+            ticket.checkedIn = true
+            return ticket
+        }
+        return data.get()
+    }
+
     override fun findAll(pageable: Pageable?): Page<TicketSales>? {
         TODO("Not yet implemented")
     }
@@ -184,7 +194,7 @@ class TicketSalesService(
     }
 
     override fun findById(id: Long): TicketSales {
-        TODO("Not yet implemented")
+        return repository.findById(id).get()
     }
 
     override fun save(entity: TicketSales): TicketSales {

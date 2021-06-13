@@ -7,13 +7,19 @@ import com.carryme.dto.response.BaseResponse
 import com.carryme.entities.Operation
 import com.carryme.services.IOperationTicketService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.io.InputStreamResource
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import java.io.File
+import java.io.FileInputStream
 
 @RequestMapping("/backoffice/ticket-operation")
 @RestController
@@ -74,5 +80,28 @@ class TicketOperationController(
                 @RequestBody form: UserData
         ): BaseResponse {
                 return successResponse(service.bookSeat(id,form))!!
+        }
+
+        @GetMapping("/download-report/{id}")
+        fun downloadReport(
+                @PathVariable("id")
+                operationId: Long
+        ) : ResponseEntity<InputStreamResource> {
+                //create file
+                val path = service.getReport(operationId)
+
+                //download
+                val file = File(path)
+                val resource = InputStreamResource(FileInputStream(file))
+                val headers = HttpHeaders()
+                headers.add("Cache-Control", "no-cache, no-store, must-revalidate")
+                headers.add("Pragma", "no-cache")
+                headers.add("Expires", "0")
+
+                return ResponseEntity.ok()
+                        .headers(headers)
+                        .contentLength(file.length())
+                        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                        .body(resource)
         }
 }
