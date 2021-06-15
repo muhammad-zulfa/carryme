@@ -236,25 +236,28 @@ class OperationTicketService: IOperationTicketService{
                 val ticketOps: List<Long> = operationTicketRepository.findDistinctByRoutesId(it.id, dep, end)
 
                 ticketOps.map { p ->
-                    val operationParent = operationRepository.findById(p).get().apply {
-                        this.routes!!.price = it.price
-                        this.routes!!.destination = it.destination
+                    val checkSeat = operationTicketRepository.findCountAvailableSeatByOperationId(p,origin,destination)
+                    if (checkSeat > guest) {
+                        val operationParent = operationRepository.findById(p).get().apply {
+                            this.routes!!.price = it.price
+                            this.routes!!.destination = it.destination
 
-                        val d = Calendar.getInstance()
-                        d.time = this.departure
-                        if (this.routes!!.origin!!.id != it.origin!!.id) {
-                            val transits =
-                                detailRouteRepository.findFirstByOperationRoutesIdAndOriginIdAndDestinationId(
-                                    this.routes!!.id,
-                                    it.origin!!.id,
-                                    it.destination!!.id
-                                )
-                            d.add(Calendar.MINUTE, transits.eta!!)
+                            val d = Calendar.getInstance()
+                            d.time = this.departure
+                            if (this.routes!!.origin!!.id != it.origin!!.id) {
+                                val transits =
+                                    detailRouteRepository.findFirstByOperationRoutesIdAndOriginIdAndDestinationId(
+                                        this.routes!!.id,
+                                        it.origin!!.id,
+                                        it.destination!!.id
+                                    )
+                                d.add(Calendar.MINUTE, transits.eta!!)
+                            }
+                            this.departure = d.time
+                            this.routes!!.eta = it.eta
                         }
-                        this.departure = d.time
-                        this.routes!!.eta = it.eta
+                        schedule.add(operationParent)
                     }
-                    schedule.add(operationParent)
                 }
             }
 
