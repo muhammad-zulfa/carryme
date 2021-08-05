@@ -135,6 +135,7 @@ class OperationTicketService: IOperationTicketService{
             }
             val resp = OperationTicketSeatResponse()
             BeanUtils.copyProperties(it,resp)
+            resp.isEnable = it.isEnable!!
             val status = operationTicketRepository.findOneByRoutesIdAndOperationIdAndFerrySeatsIdAndFerryId(routeId,operationId, it.id,operation.ferry!!.id)
             resp.status = OperationTicketSeatResponse.OperationStatus().apply {
                 this.id = status.id
