@@ -142,7 +142,7 @@ class OperationTicketService: IOperationTicketService{
             }
             response.add(resp)
 
-            if(response.size == 4){
+            if(response.size == 6){
                 mergedResponse.add(response.toList())
                 response.clear()
                 res.put(deck,mergedResponse)

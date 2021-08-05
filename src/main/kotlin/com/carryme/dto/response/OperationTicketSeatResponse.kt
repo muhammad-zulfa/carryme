@@ -14,6 +14,8 @@ class OperationTicketSeatResponse {
 
     var isDiffable: Boolean = false
 
+    var isEnable: Boolean = true
+
     var seatRow: String? = null
 
     var status: OperationStatus? = null
