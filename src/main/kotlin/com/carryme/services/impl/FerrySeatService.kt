@@ -66,6 +66,7 @@ class FerrySeatService: IFerrySeatService{
             ferry = ferryRepository.findById(shipId).get()
         }
         BeanUtils.copyProperties(form,ferry)
+        ferry.isEnable = form.isEnable
         return repository.save(ferry)
     }
 
