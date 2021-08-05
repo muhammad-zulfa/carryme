@@ -73,17 +73,20 @@ class FerrySeatService: IFerrySeatService{
         val seats: MutableList<FerrySeats> = mutableListOf()
         var rowArray = arrayOf<String>("A","B","C","D","E","F","G","H","I","J","K","L","M",)
         var row = 0;
-        val exists =repository.findAllByDeckNumberAndFerryIdOrderByDeckNumberAscSeatRowAscSeatCodeAsc(form.deckNumber,ferryId)
+        val exists = repository.findAllByDeckNumberAndFerryIdOrderByDeckNumberAscSeatRowAscSeatCodeAsc(form.deckNumber,ferryId)
         repository.deleteAll(exists)
+        var col = 1;
         for(x in 1..form.totalSeat){
             val seat = FerrySeats()
             seat.ferry = ferryRepository.findById(ferryId).get()
             seat.deckNumber = form.deckNumber
             seat.seatRow = rowArray[row]
-            seat.seatCode = x
+            seat.seatCode = col
             seats.add( seat )
+            col++
             if(x % 6 == 0){
                 row++
+                col = 1
             }
         }
 
