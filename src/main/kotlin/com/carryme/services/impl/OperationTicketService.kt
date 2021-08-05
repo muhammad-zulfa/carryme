@@ -239,7 +239,7 @@ class OperationTicketService: IOperationTicketService{
                     val checkSeat = operationTicketRepository.findCountAvailableSeatByOperationId(p,origin,destination)
                     if (checkSeat > guest) {
                         val operationParent = operationRepository.findById(p).get().apply {
-                            this.routes!!.price = it.price
+                            this.routes!!.price = it.price!! + it.retributionFee!! + it.assuranceFee!!
                             this.routes!!.destination = it.destination
 
                             val d = Calendar.getInstance()
@@ -318,7 +318,7 @@ class OperationTicketService: IOperationTicketService{
                 if(sales == null) {
                     sales = salesRepository.save(Sales().apply {
                         status = "booked"
-                        totalPrice = ticket.routes!!.price
+                        totalPrice = ticket.routes!!.price!! + ticket.routes!!.retributionFee!! + ticket.routes!!.assuranceFee!!
                         paymentMethod = "transfer"
                         createdBy = creator.id.toString()
                         paymentExpired = exp.time

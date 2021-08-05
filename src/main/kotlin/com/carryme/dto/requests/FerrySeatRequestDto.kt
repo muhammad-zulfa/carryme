@@ -25,4 +25,7 @@ class FerrySeatRequestDto {
 
     @JsonProperty("ferry_id")
     var ferryId: Long? = null
+
+    @JsonProperty("is_enable")
+    var isEnable: Boolean? = null
 }

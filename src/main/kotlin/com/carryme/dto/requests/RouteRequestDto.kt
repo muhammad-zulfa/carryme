@@ -18,4 +18,10 @@ class RouteRequestDto {
 
     @JsonProperty("operation_routes_id")
     var operationRoutesId: Long? = null
+
+    @JsonProperty("assurance_fee")
+    var assuranceFee: Int? = null
+
+    @JsonProperty("retribution_fee")
+    var retributionFee: Int? = null
 }

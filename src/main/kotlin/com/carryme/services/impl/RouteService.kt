@@ -34,6 +34,8 @@ class RouteService: IRouteService{
                 this.eta = form.eta
                 this.name = form.name
                 this.price = form.price
+                this.assuranceFee = form.assuranceFee
+                this.retributionFee = form.retributionFee
                 this.operationRoutes = operationRouteRepository.findById(form.operationRoutesId!!).get()
             }
         }else {
@@ -43,6 +45,8 @@ class RouteService: IRouteService{
                 this.eta = form.eta
                 this.name = form.name
                 this.price = form.price
+                this.assuranceFee = form.assuranceFee
+                this.retributionFee = form.retributionFee
                 this.operationRoutes = operationRouteRepository.findById(form.operationRoutesId!!).get()
             }
         }
