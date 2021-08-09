@@ -8,11 +8,21 @@ import com.carryme.services.IDockService
 import com.carryme.services.IOperationTicketService
 import com.carryme.services.ISalesService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.io.Resource
+import org.springframework.core.io.UrlResource
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.io.IOException
+import java.net.MalformedURLException
+import java.nio.file.Path
+import java.nio.file.Paths
+import javax.servlet.http.HttpServletRequest
 
 
 @CrossOrigin(origins = ["*"], maxAge = 3600)
@@ -83,5 +93,46 @@ class PublicController(
         @RequestParam("image") multipartFile: MultipartFile
     ): BaseResponse {
         return successResponse(salesService.uploadPaymentProof(id,multipartFile))!!
+    }
+
+    @RequestMapping(
+        value = ["/proof"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.IMAGE_JPEG_VALUE]
+    )
+    @Throws(
+        IOException::class
+    )
+    fun getImage(
+        @RequestParam("path") pat: String,
+        request: HttpServletRequest
+    ): ResponseEntity<Resource?>? {
+        val path: Path = Paths.get(pat).toAbsolutePath()
+
+        var resource: Resource
+        try {
+            resource = UrlResource(path.toUri())
+        } catch (e: MalformedURLException) {
+            throw RuntimeException("Issue in reading the file", e)
+        }
+
+        var mimeType: String
+        try {
+            mimeType = request.getServletContext().getMimeType(resource.getFile().absolutePath)
+        } catch (e: IOException) {
+            mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE
+        }
+        return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType(mimeType))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName="+resource.getFilename())
+            .header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + resource.getFilename())
+            .body(resource)
+
+//        val imgFile = ClassPathResource(path)
+//        val bytes: ByteArray = StreamUtils.copyToByteArray(imgFile.inputStream)
+//        return ResponseEntity
+//            .ok()
+//            .contentType(MediaType.IMAGE_JPEG)
+//            .body(bytes)
     }
 }
