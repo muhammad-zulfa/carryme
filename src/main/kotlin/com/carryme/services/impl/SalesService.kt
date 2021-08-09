@@ -134,8 +134,9 @@ class SalesService: ISalesService{
                 model["shortDestination"] = getInitialWord(model["destination"].toString())
                 model["qr"] = "https://chart.googleapis.com/chart?cht=qr&chl=https://pelayaran.dishubdki.net/ticket/check/${it.id}&choe=UTF-8&chs=110x110"
                 model["ferryName"] = it.ticket!!.ferry!!.name!!
-                model["departure"] = simpleDateFormat.format(it.ticket!!.operation!!.departure!!)
                 calendar.time = it.ticket!!.operation!!.departure!!
+                calendar.add(Calendar.HOUR, 7)
+                model["departure"] = simpleDateFormat.format(calendar.time)
                 calendar.add(Calendar.MINUTE, -30)
                 model["gateClosed"] = simpleDateFormat.format(calendar.time).split(" ")[1]
                 model["seat"] = "${it.ticket!!.ferrySeats!!.seatRow}${it.ticket!!.ferrySeats!!.seatCode}"
