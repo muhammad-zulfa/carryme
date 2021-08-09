@@ -112,6 +112,8 @@ class OperationTicketService: IOperationTicketService{
                 this.routes!!.origin = routes.origin
                 this.routes!!.destination = routes.destination
                 this.routes!!.price = routes.price
+                this.routes!!.assuranceFee = routes.assuranceFee
+                this.routes!!.retributionFee = routes.retributionFee
                 this.routes!!.eta = routes.eta
             }
         }
@@ -242,7 +244,6 @@ class OperationTicketService: IOperationTicketService{
                         val operationParent = operationRepository.findById(p).get().apply {
                             this.routes!!.price = it.price!! + it.retributionFee!! + it.assuranceFee!!
                             this.routes!!.destination = it.destination
-
                             val d = Calendar.getInstance()
                             d.time = this.departure
                             if (this.routes!!.origin!!.id != it.origin!!.id) {
@@ -253,6 +254,7 @@ class OperationTicketService: IOperationTicketService{
                                         it.destination!!.id
                                     )
                                 d.add(Calendar.MINUTE, transits.eta!!)
+                                this.routes!!.origin = it.origin
                             }
                             this.departure = d.time
                             this.routes!!.eta = it.eta
@@ -315,7 +317,7 @@ class OperationTicketService: IOperationTicketService{
 
                 val exp = Calendar.getInstance()
                 exp.time = createdAt
-                exp.add(Calendar.MINUTE,10)
+                exp.add(Calendar.MINUTE,30)
                 if(sales == null) {
                     sales = salesRepository.save(Sales().apply {
                         status = "booked"

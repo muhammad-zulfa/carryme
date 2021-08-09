@@ -1,5 +1,6 @@
 package com.carryme.entities
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import javax.persistence.*
 
 @Entity
@@ -21,4 +22,12 @@ class OperationRoutes(var id: Long = 0): BaseEntity(id) {
 
     @Column(name = "price")
     var price: Int? = null
+
+    @Column(name = "retribution_fee")
+    @JsonProperty("retribution_fee")
+    var retributionFee: Int? = null
+
+    @Column(name = "assurance_fee")
+    @JsonProperty("assurance_fee")
+    var assuranceFee: Int? = null
 }
