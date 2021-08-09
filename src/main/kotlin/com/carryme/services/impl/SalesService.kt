@@ -132,7 +132,7 @@ class SalesService: ISalesService{
                 model["destination"] = it.ticket!!.routes!!.destination!!.name
                 model["shortOrigin"] = getInitialWord(model["origin"].toString())
                 model["shortDestination"] = getInitialWord(model["destination"].toString())
-                model["qr"] = "https://chart.googleapis.com/chart?cht=qr&chl=https://pelayaran.dishubdki.net/ticket/check/${it.id}&choe=UTF-8&chs=110x110"
+                model["qr"] = "https://chart.googleapis.com/chart?cht=qr&chl=https://admin.pelayaran.dishubdki.net/ticket/check/${it.id}&choe=UTF-8&chs=110x110"
                 model["ferryName"] = it.ticket!!.ferry!!.name!!
                 calendar.time = it.ticket!!.operation!!.departure!!
                 calendar.add(Calendar.HOUR, 7)
