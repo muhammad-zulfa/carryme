@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.Query
 import java.math.BigInteger
 
 interface UserRepository: CrudRepository<User,Long> {
+    @Query(
+        value = "select u from User u where u.username = ?1 and u.guestUser is null"
+    )
     fun findByUsername(username: String): User?
 
     @Query(
