@@ -301,15 +301,17 @@ class OperationTicketService: IOperationTicketService{
             form.pax.forEach {
                 val createdAt = Date()
                 val ticket = operationTicketRepository.findOneByRoutesIdAndOperationIdAndFerrySeatsIdAndFerryId(form.routeId!!,form.operationId!!,it.seatId!!,form.ferryId!!)
-                var guest: User = User()
+                var guest: User
                 if(it.id != null){
                     guest = userRepository.findById(it.id!!).get()
                     BeanUtils.copyProperties(it, guest,"password")
                     userRepository.save(guest)
                 }else {
+                    guest = User()
                     BeanUtils.copyProperties(it, guest)
                     userRepository.save(guest.apply {
                         guestUser = creator
+                        username = null
                         this.createdAt = createdAt
                         this.updatedAt = createdAt
                     })
