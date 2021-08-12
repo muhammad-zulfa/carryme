@@ -27,7 +27,7 @@ class UserDetailService: UserDetailsService,IUserService {
     private lateinit var roleRepository: RoleRepository
 
     override fun loadUserByUsername(username: String?): UserDetails {
-        val user: User = userRepository.findByUsername(username!!)
+        val user: User = userRepository.findByUsernameLogin(username!!)
                 ?: return org.springframework.security.core.userdetails.User(
                         " ", " ", true, true, true, true,
                         getAuthorities(Arrays.asList(

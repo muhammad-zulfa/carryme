@@ -12,6 +12,11 @@ interface UserRepository: CrudRepository<User,Long> {
     fun findByUsername(username: String): User?
 
     @Query(
+        value = "select u from User u where u.username = ?1 and u.guestUser is null and u.password is not null"
+    )
+    fun findByUsernameLogin(username: String): User?
+
+    @Query(
         nativeQuery = true,
         value = "select DATE(created_at), count(created_at) from users group by DATE(created_at) having DATE(created_at) > (current_date - interval '-7 days')"
     )
