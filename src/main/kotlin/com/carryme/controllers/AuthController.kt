@@ -62,7 +62,16 @@ class AuthController(
     fun signUp(@RequestBody registerForm: UserData): BaseResponse {
         try {
             val adminRole = roleRepository.findByName("ROLE_USER")!!
-            val user = User()
+            val existUser = userRepository.findByUsername(registerForm.username!!);
+            if (existUser!!.password != null){
+                val res = "Register Failed"
+                return errorUnauthorizedResponse(res,null)!!
+            }
+
+            val user = when(existUser){
+                null -> User()
+                else -> existUser
+            }
             val date = Date()
             user.fullname = registerForm.fullname
             user.password = passwordEncoder.encode(registerForm.password)
