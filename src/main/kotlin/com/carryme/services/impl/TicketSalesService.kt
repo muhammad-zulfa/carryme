@@ -109,10 +109,18 @@ class TicketSalesService(
         headerCell.cellStyle = headerStyle
 
         headerCell = header.createCell(7)
-        headerCell.setCellValue("Ship Name")
+        headerCell.setCellValue("Peron Retribution")
         headerCell.cellStyle = headerStyle
 
         headerCell = header.createCell(8)
+        headerCell.setCellValue("Assurance Fee")
+        headerCell.cellStyle = headerStyle
+
+        headerCell = header.createCell(9)
+        headerCell.setCellValue("Ship Name")
+        headerCell.cellStyle = headerStyle
+
+        headerCell = header.createCell(10)
         headerCell.setCellValue("Departure Time")
         headerCell.cellStyle = headerStyle
 
@@ -152,10 +160,18 @@ class TicketSalesService(
             cell.cellStyle = style
 
             cell = row.createCell(7)
-            cell.setCellValue(it.ticket!!.ferry!!.name)
+            cell.setCellValue(it.ticket!!.routes!!.retributionFee.toString())
             cell.cellStyle = style
 
             cell = row.createCell(8)
+            cell.setCellValue(it.ticket!!.routes!!.assuranceFee.toString())
+            cell.cellStyle = style
+
+            cell = row.createCell(9)
+            cell.setCellValue(it.ticket!!.ferry!!.name)
+            cell.cellStyle = style
+
+            cell = row.createCell(10)
             cell.setCellValue(formatDateR.format(it.ticket!!.departure))
             cell.cellStyle = style
 
