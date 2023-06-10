@@ -28,7 +28,9 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/carryme
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=adzura354
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=create
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_MAIL_USERNAME=adz.muh.zulfa@gmail.com
+      - SPRING_MAIL_PASSWORD=bbxbddfihphzmgvi
     expose:
       - 8080
     ports:

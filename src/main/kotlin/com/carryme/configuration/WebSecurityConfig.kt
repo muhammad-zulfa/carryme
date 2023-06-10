@@ -34,6 +34,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers("/auth/**").permitAll()
             .antMatchers("/backoffice/sales/proof/**").permitAll()
             .antMatchers("/public/**").permitAll()
+            .antMatchers("/actuator/**").permitAll()
             .anyRequest().authenticated()
             .and()
             .sessionManagement()

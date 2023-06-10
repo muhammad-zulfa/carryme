@@ -7,6 +7,7 @@ plugins {
     kotlin("jvm") version "1.4.21"
     kotlin("plugin.spring") version "1.4.21"
     kotlin("plugin.jpa") version "1.4.21"
+    kotlin("plugin.allopen") version "1.4.21"
 }
 
 group = "com"
@@ -51,6 +52,10 @@ dependencies {
     implementation("org.springframework:spring-context-support:5.2.8.RELEASE")
     implementation("org.apache.poi:poi:3.15")
     implementation("org.apache.poi:poi-ooxml:3.15")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("com.querydsl:querydsl-core:4.4.0")
+    implementation("com.querydsl:querydsl-jpa:4.4.0")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.h2database:h2")
     implementation("org.springframework.boot:spring-boot-configuration-processor")
 }
